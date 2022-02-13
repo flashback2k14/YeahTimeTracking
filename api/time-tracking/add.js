@@ -1,4 +1,11 @@
-const { notion, checkAuth, getDatabaseId, createUuidV4 } = require('../../utils');
+const { checkAuth, createUuidV4 } = require('../../utils');
+const {
+  findActiveTask,
+  createActiveEntry,
+  createEntry,
+  deleteActiveEntry,
+  updateEntryState,
+} = require('../../utils/operations');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
@@ -9,37 +16,34 @@ module.exports = async (req, res) => {
     res.status(403).send({ message: 'No valid auth' });
   }
 
-  await notion.pages
-    .create({
-      parent: {
-        database_id: getDatabaseId(),
-      },
-      properties: {
-        ID: {
-          title: [
-            {
-              type: 'text',
-              text: {
-                content: createUuidV4(),
-              },
-            },
-          ],
-        },
-        Type: {
-          rich_text: [
-            {
-              type: 'text',
-              text: {
-                content: req.body.type,
-              },
-            },
-          ],
-        },
-      },
-    })
-    .catch((error) => {
-      res.status(400).send({ message: 'failed' });
-    });
+  const taskType = req.body.type;
+
+  // check active table if task type is inside
+  // no?
+  //  --> add to active table
+  //  --> add to table and set state to running
+  // yes?
+  //  --> remove from active table
+  //  --> set state to finished
+
+  try {
+    const foundActiveTaskPages = await findActiveTask(taskType);
+
+    if ((foundActiveTaskPages?.length ?? 0) === 0) {
+      const { id } = await createEntry(createUuidV4(), taskType);
+      await createActiveEntry(id, taskType);
+    } else {
+      const foundActiveTaskPage = foundActiveTaskPages[0];
+      const pageId = foundActiveTaskPage.properties['ID']?.title[0]?.plain_text ?? -1;
+      if (pageId === -1) {
+        res.status(404).send({ message: 'invalid page id' });
+      }
+      await deleteActiveEntry(foundActiveTaskPage.id);
+      await updateEntryState(pageId);
+    }
+  } catch (error) {
+    res.status(400).send({ message: 'failed' });
+  }
 
   res.status(201).send({ message: 'successful' });
 };
