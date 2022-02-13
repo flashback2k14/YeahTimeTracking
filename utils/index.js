@@ -13,6 +13,10 @@ const checkAuth = (headers) => {
   return false;
 };
 
+const getDatabaseActiveId = () => {
+  return process.env.NODE_ENV === 'production' ? process.env.NOTION_DB_ACTIVE_ID : process.env.NOTION_DB_ACTIVE_ID_TEST;
+};
+
 const getDatabaseId = () => {
   return process.env.NODE_ENV === 'production' ? process.env.NOTION_DB_ID : process.env.NOTION_DB_ID_TEST;
 };
@@ -28,6 +32,7 @@ const createUuidV4 = () => {
 module.exports = {
   notion,
   checkAuth,
-  getDatabaseId,
   createUuidV4,
+  getDatabaseId,
+  getDatabaseActiveId,
 };

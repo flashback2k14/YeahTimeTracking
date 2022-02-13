@@ -1,0 +1,12 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    // First run `npm run start:d:b` and then execute this debug
+    // configuration in order to attach to the running debugger.
+    {
+      "name": "Attach to process",
+      "type": "node",
+      "request": "attach"
+    }
+  ]
+}
