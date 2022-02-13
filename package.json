@@ -1,0 +1,27 @@
+{
+  "name": "yeah-time-tracking",
+  "version": "1.0.0",
+  "description": "time tracking webhooks",
+  "author": "flashback2k14",
+  "license": "MIT",
+  "scripts": {
+    "start:d:p": "NODE_ENV=production vercel dev",
+    "start:d:d": "NODE_ENV=development vercel dev",
+    "start:d:b": "NODE_OPTIONS='--inspect' NODE_ENV=development vercel dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flashback2k14/YeahTimeTracking.git"
+  },
+  "bugs": {
+    "url": "https://github.com/flashback2k14/YeahTimeTracking/issues"
+  },
+  "homepage": "https://github.com/flashback2k14/YeahTimeTracking#readme",
+  "dependencies": {
+    "@notionhq/client": "0.4.13",
+    "dotenv": "16.0.0"
+  },
+  "devDependencies": {
+    "vercel": "23.1.2"
+  }
+}
