@@ -20,6 +20,20 @@ const findActiveTask = async (taskType) => {
   return results;
 };
 
+const findActiveTasks = async () => {
+  const { results } = await notion.databases.query({
+    database_id: getDatabaseActiveId(),
+    sorts: [
+      {
+        property: 'Type', 
+        direction: 'ascending',
+      },
+    ],
+  });
+
+  return results;
+}
+
 const createActiveEntry = async (uuid, taskType) => {
   await notion.pages.create({
     parent: {
@@ -107,6 +121,7 @@ const updateEntryState = async (id) => {
 module.exports = {
   createEntry,
   findActiveTask,
+  findActiveTasks,
   updateEntryState,
   createActiveEntry,
   deleteActiveEntry,
