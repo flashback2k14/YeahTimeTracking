@@ -12,8 +12,8 @@ module.exports = async (req, res) => {
 
   try {
     const foundActiveTaskPages = await findActiveTasks();
-    const types = foundActiveTaskPages?.map(page => page.properties['Type']?.rich_text[0]?.plain_text ?? -1) ?? [];
-    res.json({ types });
+    const tasks = foundActiveTaskPages?.map(page => page.properties['Type']?.rich_text[0]?.plain_text ?? -1) ?? [];
+    res.json({ active_tasks: tasks });
   } catch (error) {
     res.status(400).send({ message: 'failed' });
   }
