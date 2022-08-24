@@ -12,7 +12,13 @@ module.exports = async (req, res) => {
 
   try {
     const historyTasks = await history();
-    res.json({ historyTasks });
+
+    const simplyfiedTasks = historyTasks.map((task) => ({
+      properties: task.properties,
+      parent: task.parent,
+    }));
+
+    res.json({ historyTasks: simplyfiedTasks });
   } catch (error) {
     res.status(400).send({ message: "failed" });
   }
