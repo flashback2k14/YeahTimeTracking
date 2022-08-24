@@ -19,6 +19,7 @@
   "homepage": "https://github.com/flashback2k14/YeahTimeTracking#readme",
   "dependencies": {
     "@notionhq/client": "0.4.13",
+    "bcrypt": "5.0.1",
     "dotenv": "16.0.0"
   },
   "devDependencies": {
