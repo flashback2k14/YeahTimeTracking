@@ -1,18 +1,18 @@
-const { notion, getDatabaseActiveId, getDatabaseId } = require('../utils');
+const { notion, getDatabaseActiveId, getDatabaseId } = require("../utils");
 
 const findActiveTask = async (taskType) => {
   const { results } = await notion.databases.query({
     database_id: getDatabaseActiveId(),
     filter: {
-      property: 'Type',
+      property: "Type",
       text: {
         contains: taskType,
       },
     },
     sorts: [
       {
-        property: 'Type',
-        direction: 'ascending',
+        property: "Type",
+        direction: "ascending",
       },
     ],
   });
@@ -25,14 +25,14 @@ const findActiveTasks = async () => {
     database_id: getDatabaseActiveId(),
     sorts: [
       {
-        property: 'Type', 
-        direction: 'ascending',
+        property: "Type",
+        direction: "ascending",
       },
     ],
   });
 
   return results;
-}
+};
 
 const createActiveEntry = async (uuid, taskType) => {
   await notion.pages.create({
@@ -43,7 +43,7 @@ const createActiveEntry = async (uuid, taskType) => {
       ID: {
         title: [
           {
-            type: 'text',
+            type: "text",
             text: {
               content: uuid,
             },
@@ -53,7 +53,7 @@ const createActiveEntry = async (uuid, taskType) => {
       Type: {
         rich_text: [
           {
-            type: 'text',
+            type: "text",
             text: {
               content: taskType,
             },
@@ -73,7 +73,7 @@ const createEntry = async (uuid, taskType) => {
       ID: {
         title: [
           {
-            type: 'text',
+            type: "text",
             text: {
               content: uuid,
             },
@@ -83,7 +83,7 @@ const createEntry = async (uuid, taskType) => {
       Type: {
         rich_text: [
           {
-            type: 'text',
+            type: "text",
             text: {
               content: taskType,
             },
@@ -92,7 +92,7 @@ const createEntry = async (uuid, taskType) => {
       },
       State: {
         select: {
-          name: 'Running',
+          name: "Running",
         },
       },
     },
@@ -111,11 +111,25 @@ const updateEntryState = async (id) => {
     properties: {
       State: {
         select: {
-          name: 'Finished',
+          name: "Finished",
         },
       },
     },
   });
+};
+
+const history = async () => {
+  const { results } = await notion.databases.query({
+    database_id: getDatabaseId(),
+    sorts: [
+      {
+        property: "Modified",
+        direction: "descending",
+      },
+    ],
+  });
+
+  return results;
 };
 
 module.exports = {
@@ -125,4 +139,5 @@ module.exports = {
   updateEntryState,
   createActiveEntry,
   deleteActiveEntry,
+  history,
 };
