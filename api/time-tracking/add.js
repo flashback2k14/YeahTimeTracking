@@ -10,10 +10,12 @@ const {
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     res.status(405).send({ message: 'Not supported method' });
+    return;
   }
 
   if (!checkAuth(req.headers)) {
     res.status(403).send({ message: 'No valid auth' });
+    return;
   }
 
   const taskType = req.body.type;
@@ -41,9 +43,9 @@ module.exports = async (req, res) => {
       await deleteActiveEntry(foundActiveTaskPage.id);
       await updateEntryState(pageId);
     }
+
+    res.status(201).send({ message: 'successful' });
   } catch (error) {
     res.status(400).send({ message: 'failed' });
   }
-
-  res.status(201).send({ message: 'successful' });
 };

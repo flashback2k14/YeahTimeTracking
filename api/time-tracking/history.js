@@ -1,13 +1,15 @@
-const { checkAuth } = require("../../utils");
-const { history } = require("../../utils/operations");
+const { checkAuth } = require('../../utils');
+const { history } = require('../../utils/operations');
 
 module.exports = async (req, res) => {
-  if (req.method !== "GET") {
-    res.status(405).send({ message: "Not supported method" });
+  if (req.method !== 'GET') {
+    res.status(405).send({ message: 'Not supported method' });
+    return;
   }
 
   if (!checkAuth(req.headers)) {
-    res.status(403).send({ message: "No valid auth" });
+    res.status(403).send({ message: 'No valid auth' });
+    return;
   }
 
   try {
@@ -20,6 +22,6 @@ module.exports = async (req, res) => {
 
     res.json({ historyTasks: simplyfiedTasks });
   } catch (error) {
-    res.status(400).send({ message: "failed" });
+    res.status(400).send({ message: 'failed' });
   }
 };
