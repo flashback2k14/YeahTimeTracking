@@ -1,5 +1,5 @@
 const { checkAuth } = require('../../utils');
-const { findActiveTasks } = require('../../utils/operations');
+const { findActiveTasks, getPropertyValue } = require('../../utils/operations');
 
 module.exports = async (req, res) => {
   if (req.method !== 'GET') {
@@ -14,7 +14,13 @@ module.exports = async (req, res) => {
 
   try {
     const foundActiveTaskPages = await findActiveTasks();
-    const tasks = foundActiveTaskPages?.map((page) => page.properties['Type']?.rich_text[0]?.plain_text ?? -1) ?? [];
+    const tasks =
+      (await Promise.all(
+        foundActiveTaskPages?.map(async (page) => {
+          const propertyValue = await getPropertyValue(page.id, page.properties['Type'].id);
+          return propertyValue[0]?.rich_text?.plain_text ?? -1;
+        })
+      )) ?? [];
     res.json({ active_tasks: tasks });
   } catch (error) {
     res.status(400).send({ message: 'failed' });

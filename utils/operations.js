@@ -132,6 +132,11 @@ const history = async () => {
   return results;
 };
 
+const getPropertyValue = async (pageId, propertyId) => {
+  const { results } = await notion.pages.properties.retrieve({ page_id: pageId, property_id: propertyId });
+  return results;
+};
+
 module.exports = {
   createEntry,
   findActiveTask,
@@ -140,4 +145,5 @@ module.exports = {
   createActiveEntry,
   deleteActiveEntry,
   history,
+  getPropertyValue,
 };

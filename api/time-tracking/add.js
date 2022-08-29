@@ -5,6 +5,7 @@ const {
   createEntry,
   deleteActiveEntry,
   updateEntryState,
+  getPropertyValue,
 } = require('../../utils/operations');
 
 module.exports = async (req, res) => {
@@ -36,9 +37,11 @@ module.exports = async (req, res) => {
       await createActiveEntry(id, taskType);
     } else {
       const foundActiveTaskPage = foundActiveTaskPages[0];
-      const pageId = foundActiveTaskPage.properties['ID']?.title[0]?.plain_text ?? -1;
+      const propertyValue = await getPropertyValue(foundActiveTaskPage.id, foundActiveTaskPage.properties['ID'].id);
+      const pageId = propertyValue[0]?.title?.plain_text ?? -1;
       if (pageId === -1) {
         res.status(404).send({ message: 'invalid page id' });
+        return;
       }
       await deleteActiveEntry(foundActiveTaskPage.id);
       await updateEntryState(pageId);
