@@ -1,11 +1,7 @@
 const { checkUser } = require("../../utils");
+const { allowCors } = require("../../utils/cors");
 
-module.exports = async (req, res) => {
-  if (req.method === "OPTIONS") {
-    res.status(200).end();
-    return;
-  }
-
+const handler = async (req, res) => {
   if (req.method !== "GET") {
     res.status(405).send({ message: "Not supported method" });
     return;
@@ -21,3 +17,5 @@ module.exports = async (req, res) => {
     res.status(400).send({ message: "failed" });
   }
 };
+
+module.exports = allowCors(handler);
