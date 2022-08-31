@@ -2,7 +2,7 @@ const { checkUser } = require("../../utils");
 
 module.exports = async (req, res) => {
   if (req.method === "OPTIONS") {
-    return true;
+    return res.status(200);
   }
 
   if (req.method !== "GET") {
