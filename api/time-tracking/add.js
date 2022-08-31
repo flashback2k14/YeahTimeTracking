@@ -1,4 +1,5 @@
-const { checkAuth, createUuidV4 } = require('../../utils');
+const { checkAuth, createUuidV4 } = require("../../utils");
+const { allowCors } = require("../../utils/cors");
 const {
   findActiveTask,
   createActiveEntry,
@@ -6,16 +7,16 @@ const {
   deleteActiveEntry,
   updateEntryState,
   getPropertyValue,
-} = require('../../utils/operations');
+} = require("../../utils/operations");
 
-module.exports = async (req, res) => {
-  if (req.method !== 'POST') {
-    res.status(405).send({ message: 'Not supported method' });
+const handler = async (req, res) => {
+  if (req.method !== "POST") {
+    res.status(405).send({ message: "Not supported method" });
     return;
   }
 
   if (!checkAuth(req.headers)) {
-    res.status(403).send({ message: 'No valid auth' });
+    res.status(403).send({ message: "No valid auth" });
     return;
   }
 
@@ -37,18 +38,23 @@ module.exports = async (req, res) => {
       await createActiveEntry(id, taskType);
     } else {
       const foundActiveTaskPage = foundActiveTaskPages[0];
-      const propertyValue = await getPropertyValue(foundActiveTaskPage.id, foundActiveTaskPage.properties['ID'].id);
+      const propertyValue = await getPropertyValue(
+        foundActiveTaskPage.id,
+        foundActiveTaskPage.properties["ID"].id
+      );
       const pageId = propertyValue[0]?.title?.plain_text ?? -1;
       if (pageId === -1) {
-        res.status(404).send({ message: 'invalid page id' });
+        res.status(404).send({ message: "invalid page id" });
         return;
       }
       await deleteActiveEntry(foundActiveTaskPage.id);
       await updateEntryState(pageId);
     }
 
-    res.status(201).send({ message: 'successful' });
+    res.status(201).send({ message: "successful" });
   } catch (error) {
-    res.status(400).send({ message: 'failed' });
+    res.status(400).send({ message: "failed" });
   }
 };
+
+module.exports = allowCors(handler);
