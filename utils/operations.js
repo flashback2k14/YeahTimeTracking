@@ -119,17 +119,28 @@ const updateEntryState = async (id) => {
 };
 
 const history = async () => {
-  const { results } = await notion.databases.query({
-    database_id: getDatabaseId(),
-    sorts: [
-      {
-        property: 'Modified',
-        direction: 'descending',
-      },
-    ],
-  });
+  let hasMore = false;
+  let nextCursor = undefined;
+  const result = [];
 
-  return results;
+  do {
+    const response = await notion.databases.query({
+      database_id: getDatabaseId(),
+      sorts: [
+        {
+          property: 'Modified',
+          direction: 'descending',
+        },
+      ],
+      start_cursor: nextCursor,
+    });
+
+    result.push(...response.results);
+    hasMore = response.has_more;
+    nextCursor = response.next_cursor;
+  } while (hasMore);
+
+  return result;
 };
 
 const getPropertyValue = async (pageId, propertyId) => {
