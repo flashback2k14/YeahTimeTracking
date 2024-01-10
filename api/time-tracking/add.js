@@ -21,6 +21,7 @@ const handler = async (req, res) => {
   }
 
   const taskType = req.body.type;
+  const comment = req.body?.comment ?? undefined;
 
   // check active table if task type is inside
   // no?
@@ -34,7 +35,7 @@ const handler = async (req, res) => {
     const foundActiveTaskPages = await findActiveTask(taskType);
 
     if ((foundActiveTaskPages?.length ?? 0) === 0) {
-      const { id } = await createEntry(createUuidV4(), taskType);
+      const { id } = await createEntry(createUuidV4(), taskType, comment);
       await createActiveEntry(id, taskType);
     } else {
       const foundActiveTaskPage = foundActiveTaskPages[0];

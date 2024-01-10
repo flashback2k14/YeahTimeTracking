@@ -64,7 +64,7 @@ const createActiveEntry = async (uuid, taskType) => {
   });
 };
 
-const createEntry = async (uuid, taskType) => {
+const createEntry = async (uuid, taskType, comment) => {
   return notion.pages.create({
     parent: {
       database_id: getDatabaseId(),
@@ -86,6 +86,16 @@ const createEntry = async (uuid, taskType) => {
             type: "text",
             text: {
               content: taskType,
+            },
+          },
+        ],
+      },
+      Comment: {
+        rich_text: [
+          {
+            type: "text",
+            text: {
+              content: comment,
             },
           },
         ],
