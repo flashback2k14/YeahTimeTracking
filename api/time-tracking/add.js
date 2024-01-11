@@ -21,7 +21,7 @@ const handler = async (req, res) => {
   }
 
   const taskType = req.body.type;
-  const comment = req.body?.comment ?? undefined;
+  const comment = req.body?.comment ?? "";
 
   // check active table if task type is inside
   // no?
